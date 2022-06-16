@@ -22,7 +22,7 @@ which will always succeeds. This compiles to the following serialized script,
 ```
 To showcast the new CIP we will first create an output that contains the script which we can reference. Then we will create an output at the script address which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it. At the end there is some discussion.
 
-## Creating an output at our address to reference
+## Creating an output at a key witnessed address to reference
 First we create an output at a normal key witnessed address to which we also attach the above script to this address for later referencing in transactions. To create such an out put we use 
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
