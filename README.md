@@ -167,4 +167,5 @@ cardano-cli query utxo --address $(cat ../../../keys/key1.addr) --testnet-magic 
 19829ec330e55172f21fce6821345047fb4228229a8b5870678470bd3500b5a2     0        14786555 lovelace + TxOutDatumNone
 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41     1        15000000 lovelace + TxOutDatumNone
 ```
-
+## Discusion
+Note that in the above transaction the referenced script was still unspent and stayed this way, it was not consumed. Outputs that are already spent are not able to reference scripts anymore.
