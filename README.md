@@ -1,6 +1,6 @@
 # On reference scripts and inline datums.
 * * *
-This small tutororial shows how to utilize the new [CIP 33](https://cips.cardano.org/cips/cip33/) and  [CIP 32](https://cips.cardano.org/cips/cip32/). We will use basic plutusV2 script given by the validator
+This small tutorial shows how to utilize the new [CIP 33](https://cips.cardano.org/cips/cip33/) and  [CIP 32](https://cips.cardano.org/cips/cip32/). We will use basic plutusV2 script given by the validator
 ```
 newtype MyCustomDatum = MyCustomDatum Integer
 PlutusTx.unstableMakeIsData ''MyCustomDatum
