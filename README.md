@@ -11,7 +11,7 @@ mkValidator :: MyCustomDatum -> MyCustomRedeemer -> PlutusV2.ScriptContext -> Bo
 mkValidator _ _ _ = True
 
 ```
-which will always succeeds. Which compiles to the following serialized script,
+which will always succeeds. This compiles to the following serialized script,
 ```
 {
     "type": "PlutusScriptV2",
