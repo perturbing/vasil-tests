@@ -168,4 +168,4 @@ cardano-cli query utxo --address $(cat ../../../keys/key1.addr) --testnet-magic 
 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41     1        15000000 lovelace + TxOutDatumNone
 ```
 ## Discusion
-Note that in the above transaction the referenced script was still unspent and stayed this way, it was not consumed. Outputs that are already spent are not able to reference scripts anymore.
+Note that in the above transaction the referenced script was still unspent and stayed this way, it was not consumed. Outputs that are already spent are not able to reference scripts anymore. We also secretly used the other new [CIP 31](https://cips.cardano.org/cips/cip31/) since we referenced an output in the transaction, thought we did not use any information of it besides the script located at the address. Note that this referenced output was completly available like any other input in the referenced inputs in the `TxInfo` for the validator used [1](https://github.com/input-output-hk/plutus/blob/3c4067bb96251444c43ad2b17bc19f337c8b47d7/plutus-ledger-api/src/PlutusLedgerApi/V2/Contexts.hs#L79).
