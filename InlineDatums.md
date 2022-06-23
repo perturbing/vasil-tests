@@ -98,7 +98,8 @@ Transaction successfully submitted.
 ```
 We verify that the output was created at the script address
 ```
-$                            TxHash                                 TxIx        Amount
+$ cardano-cli query utxo --address $(cat typedGuessGame.addr) --testnet-magic 9
+                            TxHash                                 TxIx        Amount
 --------------------------------------------------------------------------------------
 3db0bbe89a032ec57519f3785fcd0c70a5177e705ecfbf469494c3f412b31d22     1        50000000 lovelace + TxOutDatumInline ReferenceTxInsScriptsInlineDatumsInBabbageEra (ScriptDataConstructor 0 [ScriptDataNumber 42])
 ```
