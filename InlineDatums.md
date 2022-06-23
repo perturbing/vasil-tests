@@ -41,7 +41,7 @@ validator = PlutusV2.mkValidatorScript
     wrap = Utils.mkUntypedValidator mkValidator
 
 ```
-This is a validator that check if the provided integer in the redeemer is the same as the integer in the datum. Note that this datum is not for safe use on mainnet since guessing the integer is not that hard, use the testnet for this example. The above validator compiles to the following `PlutusScriptV2`
+This is a validator that check if the provided integer in the redeemer is the same as the integer in the datum. Note that this datum is not for safe use on mainnet since guessing the integer is not that hard, use the testnet for this example. The above validator compiles to the following serialized`PlutusScriptV2`
 ```
 $ cat typedGuessGame.plutus
 {
