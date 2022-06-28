@@ -1,6 +1,8 @@
 # On reference scripts and inline datums.
 * * *
-This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and  [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. We will use a basic plutusV2 script given by the validator
+This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. To showcast these new CIP's in combination we will first create a transaction output that contains the script which we can later reference. Then we will create a transaaction output at the script address with an inline datum which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it. At the end there is some discussion.
+
+We will use a basic plutusV2 script given by the validator
 ```
 newtype MyCustomDatum = MyCustomDatum Integer
 PlutusTx.unstableMakeIsData ''MyCustomDatum
@@ -20,10 +22,10 @@ which will always succeeds. This compiles to the following serialized script,
 }
 
 ```
-To showcast the new CIP's we will first create an output that contains the script which we can reference. Then we will create an output at the script address which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it. At the end there is some discussion.
 
-## Creating an output at a key witnessed address to reference
-First we create an output at a normal key witnessed address to which we also attach the above script for later referencing in transactions. To create such an output we use 
+
+## Creating a transaction output at a key witnessed address to reference
+First we create a transaction output at a normal key witnessed address to which we also attach the above script for later referencing in transactions. To create such an output we use 
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 832015d4218db60e6bd9e38bbb73dc10f92f9c8d83b191e208bddb444aa103e2#0 \
@@ -73,7 +75,7 @@ $ cardano-cli query utxo --tx-in 69163b01cb8f2dd0e710419340148d518c2160a7f587c71
 ```
 We see that the `"referenceScript"` entry cointains the plutus script. Also note that we see the new `"inlineDatum"` field here as well.
 
-## Creating an output at the script address to claim
+## Creating a transaction output at the script address to claim
 This is done via the below command
 ```
 cardano-cli transaction build --babbage-era --testnet-magic 9 \
@@ -83,7 +85,7 @@ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --change-address $(cat ../../../keys/key1.addr) \
 --out-file tx.body
 ```
-Here we used an arbitrary datum of the format 
+Here we used an arbitrary datum of the format, this datum can be arbitrary since the scripts logic we use does not depend on it. 
 ```
 {"constructor":0,"fields":[{"int":42}]}
 ```
@@ -141,7 +143,7 @@ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --protocol-params-file ../../protocol.json \
 --out-file tx.body
 ```
-Here we used an arbitrary redeemer of the format 
+Similarly as before we used an arbitrary redeemer of the format 
 ```
 {"constructor":0,"fields":[{"int":42}]}
 ```
@@ -168,4 +170,4 @@ cardano-cli query utxo --address $(cat ../../../keys/key1.addr) --testnet-magic 
 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41     1        15000000 lovelace + TxOutDatumNone
 ```
 ## Discusion
-Note that in the above transaction the referenced script was still unspent and stayed this way, it was not consumed. Outputs that are already spent are not able to reference scripts anymore. We also secretly used the other new [CIP 31](https://cips.cardano.org/cips/cip31/) since we referenced an output in the transaction, thought we did not use any information of it besides the script located at the address. Note that this referenced output was completly available like any other input in the referenced inputs in the `TxInfo` for the validator used [1](https://github.com/input-output-hk/plutus/blob/3c4067bb96251444c43ad2b17bc19f337c8b47d7/plutus-ledger-api/src/PlutusLedgerApi/V2/Contexts.hs#L79).
+Note that in the above transaction the output that contained the referenced script was not consumed. Outputs that are already spent are not able to reference scripts anymore. We also secretly used the other new [CIP 31](https://cips.cardano.org/cips/cip31/) since we referenced an output in the transaction, thought we did not use any information of it besides the script located at the address. Note that this referenced output was completly available like any other input in the referenced inputs in the `TxInfo` for the validator used [1](https://github.com/input-output-hk/plutus/blob/3c4067bb96251444c43ad2b17bc19f337c8b47d7/plutus-ledger-api/src/PlutusLedgerApi/V2/Contexts.hs#L79).
