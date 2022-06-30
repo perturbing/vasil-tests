@@ -1,6 +1,6 @@
 # On reference scripts and inline datums.
 * * *
-This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. To showcast these new CIP's in combination we will first create a transaction output that contains the script which we can later reference. Then we will create a transaaction output at the script address with an inline datum which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it. At the end there is some discussion.
+This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. To showcast these new CIP's in combination we will first create a transaction output that contains the script which we can later reference. Then we will create a transaaction output at the script address with an inline datum which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it.
 
 We will use a basic plutusV2 script given by the validator
 ```
@@ -169,5 +169,3 @@ cardano-cli query utxo --address $(cat ../../../keys/key1.addr) --testnet-magic 
 19829ec330e55172f21fce6821345047fb4228229a8b5870678470bd3500b5a2     0        14786555 lovelace + TxOutDatumNone
 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41     1        15000000 lovelace + TxOutDatumNone
 ```
-## Discusion
-Note that in the above transaction the output that contained the referenced script was not consumed. Outputs that are already spent are not able to reference scripts anymore. We also secretly used the other new [CIP 31](https://cips.cardano.org/cips/cip31/) since we referenced an output in the transaction, thought we did not use any information of it besides the script located at the address. Note that this referenced output was completly available like any other input in the referenced inputs in the `TxInfo` for the validator used [1](https://github.com/input-output-hk/plutus/blob/3c4067bb96251444c43ad2b17bc19f337c8b47d7/plutus-ledger-api/src/PlutusLedgerApi/V2/Contexts.hs#L79).
