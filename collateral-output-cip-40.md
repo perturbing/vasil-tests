@@ -8,7 +8,7 @@ Before the Babbage era there where some restrictions on how and what outputs cou
 
 ## An example
 As an example we will construct a transaction that will consume an output that sits at the script address of the following validator.
-```
+```haskell
 {-# LANGUAGE DataKinds         		#-}
 {-# LANGUAGE NoImplicitPrelude 		#-}
 {-# LANGUAGE TemplateHaskell 		#-}
