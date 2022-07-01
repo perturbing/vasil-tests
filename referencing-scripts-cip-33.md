@@ -13,7 +13,7 @@ With the introduction of the new Babbage era it is now possible to reference scr
 
 ## An example
 To showcase this new feature we will use the trivial validator. We will first create an output at its script address and an output at our key witnessed address that holds the script. Then we are going to spend the output at the script address with a transaction that references the script at the key witnessed address without consuming it. The used validator for this example is
-```
+```haskell
 {-# LANGUAGE DataKinds         		#-}
 {-# LANGUAGE NoImplicitPrelude 		#-}
 {-# LANGUAGE TemplateHaskell 		#-}
