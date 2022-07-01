@@ -64,7 +64,7 @@ $ cardano-cli transaction submit \
 Transaction successfully submitted.
 
 ```
-After signing and submiting the transaction we can now query my address again:
+After signing and submitting the transaction we can now query my address again:
 ```
 $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
@@ -169,7 +169,7 @@ cat reference-input.plutus
 }
 ```
 
-The following step is to send funds to the hash of the script.
+The next step is to send funds to the hash of the script.
 First we need to get the address of the script, we do it with this line:
 
 ```
@@ -243,7 +243,7 @@ $ cardano-cli transaction submit \
 Transaction successfully submitted.
 ```
 ## The mkReferenceInputValidator function
-The contract will be explained further in this section.
+The contract will be explained in this section.
 
 ```
 {-# INLINABLE mkReferenceInputValidator #-}
