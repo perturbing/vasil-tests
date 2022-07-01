@@ -8,7 +8,7 @@ In practice the construction of a transaction that consumes an output with datum
 
 ## An example
 To showcase this new feature we will use the trivial validator given by
-```
+```haskell
 {-# LANGUAGE DataKinds         		#-}
 {-# LANGUAGE NoImplicitPrelude 		#-}
 {-# LANGUAGE TemplateHaskell 		#-}
