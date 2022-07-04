@@ -245,7 +245,7 @@ Transaction successfully submitted.
 ## The mkReferenceInputValidator function
 The contract will be explained in this section.
 
-```
+```haskell
 {-# INLINABLE mkReferenceInputValidator #-}
 mkReferenceInputValidator :: BuiltinData -> Integer -> PlutusV2.ScriptContext -> Bool
 mkReferenceInputValidator  _ r ctx =
