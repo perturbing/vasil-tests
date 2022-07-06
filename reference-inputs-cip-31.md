@@ -1,8 +1,8 @@
 # How to use Reference inputs?
-In this tutorial we will show how to use reference inputs as a new feature of the Vasil HF.
+In this tutorial, we will show how to use reference inputs as a new feature of the Vasil HF.
 
-## Input vs Reference Input?
-The difference between a simple Input and a Reference input is that the reference input will never be spent. But, why do we need it? It is used to read data contained in the input. As we saw in the *referencing-scripts-cip-33* tutorial we use the Script contained in the input. In the Babbage era an input cointains the following information:
+## Input vs. Reference Input?
+The difference between a simple Input and a Reference input is that the reference input will never be spent. But, why do we need it? It is used to read data contained in the input. As we saw in the *referencing-scripts-cip-33* tutorial, we use the Script contained in the input. In the Babbage era, an input contains the following information:
 
 ``` haskell
 -- | An input of a pending transaction.
@@ -12,7 +12,7 @@ data TxInInfo = TxInInfo
     } deriving stock (Generic, Haskell.Show, Haskell.Eq)
 ```
 
-The `txInInfoOutRef` only contains the transaction hash and the index of the input. but the TxOut contains 4 things:
+The `txInInfoOutRef` only contains the transaction hash and the index of the input. But the TxOut contains 4 things:
 
 ```haskell
 data TxOut = TxOut {
@@ -28,11 +28,11 @@ The target address, a value, optionally a datum/datum hash, and optionally a ref
 * More concurrency, many transactions can reference the input at the same time.
 
 ## An example
-In this example we will write a simple contract that reads the datum of an input without spending it. The example that fits better to this feature is an Oracle. We sometimes need to get information from outside the blockchain. We will store that data in the datum of an input. We will only show a simple usage of the reference input to keep it simple.
+In this example, we will write a simple contract that reads the datum of an input without spending it. The example that fits better to this feature is an Oracle. We sometimes need to get information from outside the blockchain. We will store that data in the datum of an input. Furthermore, we will only show a simple usage of the reference input to keep it simple.
 
-We need an input containing some information to make use of the reference input. To do that we will store information in an address with the following `cardano-cli` commands:
+We need an input containing some information to make use of the reference input. To do that, we will store information in an address with the following `cardano-cli` commands:
 
-First we need to get UTxOs of my address:
+First, we need to get UTxOs of my address:
 
 ```
 $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
@@ -41,7 +41,7 @@ $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
 ac5dbe96fca116e9fdcc24d098a265af5491b9b41da8c5a638e2820c13941121     0        100988999123 lovelace + TxOutDatumNone
 ```
 
-Then I'll select the ac5dbe...941121#0 UTxO to create a new one.
+Then I'll select the `ac5dbe...941121#0` UTxO to create a new one.
 
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
@@ -64,7 +64,7 @@ $ cardano-cli transaction submit \
 Transaction successfully submitted.
 
 ```
-After signing and submitting the transaction we can now query my address again:
+After signing and submitting the transaction, we can now query my address again:
 ```
 $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
@@ -72,7 +72,7 @@ $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
 9b1eacf97a6a8ea87f2e677daec26e0a81fe500d6243a7682a72c17d950df1db     0        100938833050 lovelace + TxOutDatumNone
 9b1eacf97a6a8ea87f2e677daec26e0a81fe500d6243a7682a72c17d950df1db     1        50000000 lovelace + TxOutDatumInline ReferenceTxInsScriptsInlineDatumsInBabbageEra (ScriptDataNumber 42)
 ```
-Now that we have a new UTxO in my address that contains a datum we can use it as Reference input in subsequent transactions. For this example we will create a new Validator script that only allows you to spend funds if you include that UTxO as Reference input.
+Now that we have a new UTxO in my address that contains a datum, we can use it as reference input in subsequent transactions. For this example, we will create a new Validator script that only allows you to spend funds if you include that UTxO as Reference input.
 
 ```haskell
 {-# LANGUAGE DataKinds             #-}
@@ -179,7 +179,7 @@ $ cat reference-input.addr
 addr_test1wzem0yuxjqyrmzvrsr8xfqhumyy555ngyjxw7wrg2pav90q8cagu2
 ```
 
-We are able to send funds to the script:
+We can send funds to the script:
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 9b1eacf97a6a8ea87f2e677daec26e0a81fe500d6243a7682a72c17d950df1db#0 \
@@ -206,9 +206,9 @@ $ cardano-cli query utxo --address $(cat reference-input.addr) --testnet-magic 9
 5e341149c550ab4f246f838d9400b6784989cf45c46b94e16c4cc0e311abe216     1        10000000 lovelace + TxOutDatumInline ReferenceTxInsScriptsInlineDatumsInBabbageEra (ScriptDataConstructor 0 [])
 ```
 
-After a while we see that there are 10 ADAs blocked in the reference input script. To unlock the ADAs we will need a new transaction with two regular inputs and one input reference.
+After a while, we see that there are 10 ADAs blocked in the reference input script. To unlock the ADAs we will need a new transaction with two regular inputs and one input reference.
 
-First let's query the UTxOs in the payment address:
+First, let's query the UTxOs in the payment address:
 ```
 $ cardano-cli query utxo --address $(cat payment.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
@@ -268,11 +268,12 @@ mkReferenceInputValidator  _ r ctx =
         OutputDatum     od  -> PlutusTx.fromBuiltinData $ PlutusV2.getDatum od
       _           -> Nothing
 ```
-The purpose of this validator is to make sure that there is only one reference input and the Datum of it matches the redeemer (In this case, we only use the redeemer to match the datum of the Reference Input, but it can also used for more purposes). Notice that we used `txInfoReferenceInputs` instead `txInfoInputs`. It means that we selected the Inputs that won't be spent.
+The purpose of this validator is to make sure that there is only one reference input and the Datum of it matches the redeemer. In this case, we only use the redeemer to match the datum of the Reference Input, but it can also be used for more purposes. Notice that we used `txInfoReferenceInputs` instead `txInfoInputs`. It means that we selected the inputs that won't be spent.
 
 ## Considerations
-* In this example we also used CIP 32 - Inline Datum.
+* In this example, we also used CIP 32 on inline Datum.
 * The purpose of this tutorial is only to show the usage of Reference Inputs.
 * A realistic Oracle should have more programming techniques (For example, having a NFT in the Reference Input to prove the validity).
-* In this example, we used a UTxO sitting in a Payment Address as Reference Input but we also can use a UTxO of Script Addresses.
-* As we will see in the Referencing Scripts tutorial, CIP 31 - Reference Inputs could be used in combination with CIP 33 - Reference Script to upload Plutus script once and reference it every time we need it.
+* In this example, we used a UTxO sitting in a Payment Address as Reference Input, but we also can use a UTxO of Script Addresses.
+* As we will see in the Referencing Scripts tutorial, CIP 31 on reference Inputs could be used with CIP 33 on reference Script to upload Plutus script once and reference it every time we need it.
+
