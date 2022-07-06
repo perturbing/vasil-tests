@@ -1,13 +1,13 @@
 # How to use collateral outputs
-In this tutorial we will discuss the usage of the new functionality of collateral outputs [(1)](https://github.com/cardano-foundation/CIPs/blob/138565ea4c2303fabc576c0f7f67228a54124b17/CollateralOutput/README.md).
+In this tutorial, we will discuss the usage of the new functionality of collateral outputs [(1)](https://github.com/cardano-foundation/CIPs/blob/138565ea4c2303fabc576c0f7f67228a54124b17/CollateralOutput/README.md).
 ## What is collateral? 
-When an users sends a transaction to the Cardano network that uses a script this inflicts some strain of computation on the validation of that transaction. This strain is expressed in the abstract execution units and validators need to be compensated for these calculations. If such a transaction is successful the transactions costs that come from the inputs cover these validation costs. But if the transaction fails by incorrect executing of the script, these transaction inputs can not cover these fees since they are not spendable without correct execution of the script. This while the validator did perform a calculation. To cover for this the creator of the transaction also attaches a collateral to the transaction for it to be even considered for validation. This unspent transaction output is only consumed when the validation of the script execution fails. 
+When users sends a transaction to the Cardano network that uses a script, this inflicts some strain of computation on the validation of that transaction. This strain is expressed in the abstract execution units, and validators need to be compensated for these calculations. If such a transaction is successful, the transactions costs that come from the inputs cover these validation costs. But if the transaction fails by incorrect executing of the script, these transaction inputs cannot cover these fees since they are not spendable without correct execution of the script. This, while the validator did perform a calculation. To cover for this, the creator of the transaction also attaches a collateral to the transaction for it to be even considered for validation. This unspent transaction output is only consumed when the validation of the script execution fails. 
 
 ## What will change in the new Babbage era
-Before the Babbage era there where some restrictions on how and what outputs could be used as collateral inputs. Firstly, collateral could only be consumed in its entirety, even if the normal fee for executing the script was less than the value of the collateral given. Secondly, outputs that contained native assets where not able to serve as collateral inputs. In the new Babbage era users will be able to specify exactly how an output that serves as a collateral input in a transaction can be spend if execution of a script fails. This gives the possibility to precisely specify how the collateral is used and creates the possibility for native assets to be also present in the collateral, though they will not serve as a payment for the fee.
+Before the Babbage era, there were some restrictions on how and what outputs could be used as collateral inputs. Firstly, collateral could only be consumed in its entirety, even if the normal fee for executing the script was less than the value of the collateral given. Secondly, outputs that contained native assets were not able to serve as collateral inputs. In the new Babbage era, users will be able to specify exactly how an output that serves as a collateral input in a transaction can be spent if execution of a script fails. This gives the possibility to precisely specify how the collateral is used and creates the possibility for native assets to be also present in the collateral, though they will not serve as a payment for the fee.
 
 ## An example
-As an example we will construct a transaction that will consume an output that sits at the script address of the following validator.
+As an example, we will construct a transaction that will consume an output that sits at the script address of the following validator.
 ```haskell
 {-# LANGUAGE DataKinds         		#-}
 {-# LANGUAGE NoImplicitPrelude 		#-}
@@ -58,7 +58,7 @@ The address of this script can be found via the following the command
 ```
 $ cardano-cli address build --payment-script-file typedAlwaysSucceeds.plutus --testnet-magic 9 --out-file typedAlwaysSucceeds.addr
 ```
-Note that this example is executed on a private testnet with magic number `9`, on the Cardano testnet this is `1097911063`. To view the current outputs located at the script address we use 
+Note that this example is executed on a private testnet with magic number `9`, on the Cardano testnet this is `1097911063`. To view the current outputs located at the script address, we use, 
 ```
 $ cardano-cli query utxo --address $(cat typedAlwaysSucceeds.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
@@ -67,14 +67,14 @@ $ cardano-cli query utxo --address $(cat typedAlwaysSucceeds.addr) --testnet-mag
 ```
 This output has an inline datum and contains a reference script that corresponds to the script address at hand.
 ## Constructing a transaction with a failing script execution
-To showcase how we can specify the spending of a collateral input we construct a transaction that does not meet the requirements to successfully validate this always validating script. We do this by explicitly wrongfully stating in the transaction how many abstract execution units are needed for execution of the script. This amount is characterized by two values, `exBudgetCPU` and `exBudgetMemory` which we represent with a tuple of integers in the transaction. The amount will be less than the true value needed for correct validation and thus execution will fail. This results in the collateral being taken. The output we will use as a collateral is the output 
+To showcase how we can specify the spending of a collateral input, we construct a transaction that does not meet the requirements to successfully validate this always validating script. We do this by explicitly wrongfully stating in the transaction how many abstract execution units are needed for execution of the script. This amount is characterized by two values, `exBudgetCPU` and `exBudgetMemory` which we represent with a tuple of integers in the transaction. The amount will be less than the true value needed for correct validation, and thus execution will fail. This results in the collateral being taken. The output we will use as a collateral is the output,
 ```
 $ cardano-cli query utxo --address $(cat key1.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
 --------------------------------------------------------------------------------------
 932704ece8010bb6603c2b43fba97390f4c88dac0283f26fdb62fdf2ed22abfa     1        100000000 lovelace + 1 4844bf6c04c26579aebb72d416167f5cce8446ae022a4e712130bc94.5072696d65436f756e746572 + TxOutDatumNone
 ```
-Note that this transaction output contains a native asset. To explicitly mention the available abstract execution units we use the `build-raw` client command which allows us to specify more details about the transaction and can allow us to force the creation of a failing transaction with the flag `--script-invalid`  flag. 
+Note that this transaction output contains a native asset. To explicitly mention the available abstract execution units, we use the `build-raw` client command which allows us to specify more details about the transaction and can allow us to force the creation of a failing transaction with the flag `--script-invalid`  flag. 
 ```
 $ cardano-cli transaction build-raw \
 --babbage-era \
@@ -93,33 +93,34 @@ $ cardano-cli transaction build-raw \
 --script-invalid \
 --out-file tx.body
 ```
-While using the `build-raw` command one has to explicitly calculate the transaction fee's themselves. For ease of the construction we chose to pay more than the minimum fee. As an overview we state here the flow of value in both cases of successful execution and script failure.
+While using the `build-raw` command, one has to explicitly calculate the transaction fee's themselves. For ease of the construction, we chose to pay more than the minimum fee. As an overview, we state here the flow of value in both cases of successful execution and script failure.
 
 |  | Value consumed  | Value output| Fee
 | :------------ |:---------------:| -----:| ------:
 | succesful execution | input at `typedAlwaysSucceeds.addr` with `20000000 lovelace` | `19700000 lovelace` at the `key1.addr` | `300000 lovelace`
 | script failure     | collateral input at `key1.addr` with `100000000 + 1 native asset`        |   `99550000 lovelace + 1 native asset` at the `key1.addr` |  `45000`
 
-With the current protocol parameter the minimum collateral is `1.5` times the transaction fee. 
+With the current protocol parameter, the minimum collateral is `1.5` times the transaction fee. 
 
-Now to get the transaction id for later identification we use
+Now to get the transaction ID for later identification we use
 ```
 $ cardano-cli transaction txid --tx-body-file tx.body 
 56e82d6887ca6f0352e931cc0bebb34ae5d568522c767c705bbb16171a69229b
 ```
-This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use
+This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use,
 ```
 $ cardano-cli transaction sign --tx-body-file tx.body --signing-key-file key1.skey --testnet-magic 9 --out-file tx.signed
 ```
-To submit the signed transaction we use
+To submit the signed transaction, we use
 ```
 $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed 
 Transaction successfully submitted.
 ```
-We verify that due to the script failure the collateral was consumed and the residue `99550000+"1 4844bf6c04c26579aebb72d416167f5cce8446ae022a4e712130bc94.5072696d65436f756e746572"` is returned to the `key1.addr` as expected.
+We verify that due to the script failure, the collateral was consumed and the residue `99550000+"1 4844bf6c04c26579aebb72d416167f5cce8446ae022a4e712130bc94.5072696d65436f756e746572"` is returned to the `key1.addr` as expected.
 ```
 cardano-cli query utxo --address $(cat key1.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
 --------------------------------------------------------------------------------------
 56e82d6887ca6f0352e931cc0bebb34ae5d568522c767c705bbb16171a69229b     1        99550000 lovelace + 1 4844bf6c04c26579aebb72d416167f5cce8446ae022a4e712130bc94.5072696d65436f756e746572 + TxOutDatumNone
 ```
+
