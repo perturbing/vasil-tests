@@ -29,18 +29,13 @@ import Plutus.V2.Ledger.Api qualified as PlutusV2
 import Plutus.Script.Utils.V2.Scripts as Utils
 import Ledger.Address as Addr
 
-newtype SecretDatum = SecretDatum Integer
-PlutusTx.unstableMakeIsData ''SecretDatum
-newtype GuessRedeemer = GuessRedeemer Integer
-PlutusTx.unstableMakeIsData ''GuessRedeemer
-
--- This validator always validates true
-{-# INLINABLE mkValidator #-}
 newtype MyCustomDatum = MyCustomDatum Integer
 PlutusTx.unstableMakeIsData ''MyCustomDatum
 newtype MyCustomRedeemer = MyCustomRedeemer Integer
 PlutusTx.unstableMakeIsData ''MyCustomRedeemer
 
+-- This validator always validates true
+{-# INLINABLE mkValidator #-}
 mkValidator :: MyCustomDatum -> MyCustomRedeemer -> PlutusV2.ScriptContext -> Bool
 mkValidator _ _ _ = True
 
