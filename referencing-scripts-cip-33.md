@@ -1,18 +1,18 @@
 # How to reference scripts
-In this tutorial we will discuss the usage of the new functionality of referencing scripts [(1)](https://cips.cardano.org/cips/cip33/). 
+In this tutorial, we will discuss the usage of the new functionality of referencing scripts [(1)](https://cips.cardano.org/cips/cip33/). 
 ## What are scripts?
-Functionally scripts are witnesses that validate if an action is permitted on the Cardano blockchain. It takes some input and returns with either true of false. The cardano Blockchain currently has two types of scripts
+Functionally, scripts are witnesses that validate if an action is permitted on the Cardano blockchain. It takes some input and returns with either true or false. The Cardano Blockchain currently has two types of scripts.
 
 - Simple scripts
 - Plutus scripts
 
-Simple scripts are explained in detail here [(2)](https://github.com/input-output-hk/cardano-node/blob/master/doc/reference/simple-scripts.md) and plutus scripts are explained more in detail here [(3)](https://docs.cardano.org/plutus/Plutus-validator-scripts). Besides locking funds scripts also determine if a transaction can forge or burn native assets. Currently, **every** transaction that utilizes a script must also provide the script corresponding to the action that they witness. The relation between scripts and their action is via the hash of the script. For minting or burning assets this relation is embedded in the policy id of the assets. Scripts that lock transaction outputs at an address this relation is embedded in the address.
+Simple scripts are explained in detail here [(2)](https://github.com/input-output-hk/cardano-node/blob/master/doc/reference/simple-scripts.md) and plutus scripts are explained more in detail here [(3)](https://docs.cardano.org/plutus/Plutus-validator-scripts). Besides locking funds, scripts also determine if a transaction can forge or burn native assets. Currently, **every** transaction that utilizes a script must also provide the script corresponding to the action that they witness. The relation between scripts and their action is via the hash of the script. For minting or burning assets, this relation is embedded in the policy ID of the assets. Scripts that lock transaction outputs at an address, this relation is embedded in the address.
 
 ## What will change in the new Babbage?
-With the introduction of the new Babbage era it is now possible to reference scripts from previously create output. This means that one can create an output that contains a script and later reference this transaction output in another transaction that uses that script to validate some action. The power of this is that this last transaction does not consume the output containing the script but only references the script. In this way multiple transactions can reference the script without appending the script again to the blockchain. This saves on fee's and on space on the ledger.
+With the introduction of the new Babbage era, it is now possible to reference scripts from previously create output. This means that one can create an output that contains a script and later reference this transaction output in another transaction that uses that script to validate some action. The power of this is that this last transaction does not consume the output containing the script, but only references the script. In this way, multiple transactions can reference the script without appending the script again to the blockchain. This saves on fee's and on space on the ledger.
 
 ## An example
-To showcase this new feature we will use the trivial validator. We will first create an output at its script address and an output at our key witnessed address that holds the script. Then we are going to spend the output at the script address with a transaction that references the script at the key witnessed address without consuming it. The used validator for this example is
+To showcase this new feature, we will use the trivial validator. We will first create an output at its script address and an output at our key witnessed address that holds the script. Then we are going to spend the output at the script address with a transaction that references the script at the key witnessed address without consuming it. The used validator for this example is,
 ```haskell
 {-# LANGUAGE DataKinds         		#-}
 {-# LANGUAGE NoImplicitPrelude 		#-}
@@ -50,7 +50,7 @@ validator = PlutusV2.mkValidatorScript
  where
     wrap = Utils.mkUntypedValidator mkValidator
 ```
-This is a validator always validates true. Note that this script is not for safe use on mainnet since nothing hinders spending funds at this script address, only use the testnet for this example. The above validator compiles to the following serialized `PlutusScriptV2`
+This is a validator, always validates true. Note that this script is not for safe use on mainnet since nothing hinders spending funds at this script address, only use the testnet for this example. The above validator compiles to the following serialized `PlutusScriptV2`
 ```
 $ cat typedAlwaysSucceeds.plutus
 {
@@ -63,15 +63,15 @@ The address of this script can be found via the following the command
 ```
 $ cardano-cli address build --payment-script-file typedAlwaysSucceeds.plutus --testnet-magic 9 --out-file typedAlwaysSucceeds.addr
 ```
-Note that this example is executed on a private testnet with magic number `9`, on the Cardano testnet this is `1097911063`. To view the current outputs located at the script address we use 
+Note that this example is executed on a private testnet with magic number `9`, on the Cardano testnet this is `1097911063`. To view the current outputs located at the script address, we use, 
 ```
 $ cardano-cli query utxo --address $(cat typedAlwaysSucceeds.addr) --testnet-magic 9
                            TxHash                                 TxIx        Amount
 --------------------------------------------------------------------------------------
 ```
-Currently the address has no outputs located at it.
+Currently, the address has no outputs located at it.
 ## Creating the output at the script address
-Since the validator does not validate on the conditions of what the datum or redeemer will be we will use the datum and redeemer given by
+Since the validator does not validate on the conditions of what the datum or redeemer will be, we will use the datum and redeemer given by
 ```
 $ cat myDatum.json
 {
@@ -81,7 +81,7 @@ $ cat myDatum.json
 	}]
 }
 ```
-To create the first output we build the transaction with the following command
+To create the first output, we build the transaction with the following command
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 3db0bbe89a032ec57519f3785fcd0c70a5177e705ecfbf469494c3f412b31d22#0 \
@@ -91,16 +91,16 @@ $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --out-file tx.body
 Estimated transaction fee: Lovelace 167349
 ```
-To get the transaction id for identification we use
+To get the transaction ID for identification, we use
 ```
 $ cardano-cli transaction txid --tx-body-file tx.body 
 93724d399b58a70385ad7ce7ba6471b7b4fcb691a28266cd7700d902e0a500c5
 ```
-This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use
+This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use,
 ```
 $ cardano-cli transaction sign --tx-body-file tx.body --signing-key-file key1.skey --testnet-magic 9 --out-file tx.signed
 ```
-To submit the signed transaction we use
+To submit the signed transaction, we use,
 ```
 $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed 
 Transaction successfully submitted.
@@ -113,7 +113,7 @@ $ cardano-cli query utxo --address $(cat typedAlwaysSucceeds.addr) --testnet-mag
 93724d399b58a70385ad7ce7ba6471b7b4fcb691a28266cd7700d902e0a500c5     1        50000000 lovelace + TxOutDatumHash ScriptDataInBabbageEra "fcaa61fb85676101d9e3398a484674e71c45c3fd41b492682f3b0054f4cf3273"
 ```
 ## Creating the output at the key witnessed address
-Now we will create a output that contains a the script so that we can later reference it. We build this transaction with
+Now we will create an output that contains a script so that we can later reference it. We build this transaction with,
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 93724d399b58a70385ad7ce7ba6471b7b4fcb691a28266cd7700d902e0a500c5#0 \
@@ -123,16 +123,16 @@ $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --out-file tx.body
 Estimated transaction fee: Lovelace 253061
 ```
-To get the transaction id for identification we use
+To get the transaction ID for identification, we use
 ```
 $ cardano-cli transaction txid --tx-body-file tx.body 
 d73a722b223431e5496077e7c432a63b6159a36f0aa41d3bf12f7beb1abd8bfb
 ```
-This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use
+This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use,
 ```
 $ cardano-cli transaction sign --tx-body-file tx.body --signing-key-file key1.skey --testnet-magic 9 --out-file tx.signed
 ```
-To submit the signed transaction we use
+To submit the signed transaction, we use
 ```
 $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed 
 Transaction successfully submitted.
@@ -145,7 +145,7 @@ $ cardano-cli query utxo --address $(cat key1.addr) --testnet-magic 9
 d73a722b223431e5496077e7c432a63b6159a36f0aa41d3bf12f7beb1abd8bfb     0        99768434346 lovelace + TxOutDatumNone
 d73a722b223431e5496077e7c432a63b6159a36f0aa41d3bf12f7beb1abd8bfb     1        15000000 lovelace + TxOutDatumNone
 ```
-If we take a closer look at the ouput `TxIx 0` we see the script attached to the output.
+If we take a closer look at the output `TxIx 0` we see the script attached to the output.
 ```
 $ cardano-cli query utxo --tx-in d73a722b223431e5496077e7c432a63b6159a36f0aa41d3bf12f7beb1abd8bfb#1 --testnet-magic 9 --out-file test && cat test
 {
@@ -169,7 +169,7 @@ $ cardano-cli query utxo --tx-in d73a722b223431e5496077e7c432a63b6159a36f0aa41d3
 }
 ```
 ## Spending the output at the script address
-Now we are going to spend the ouput at the script address while referencing the just created output with the script. We create the transaction with
+Now we are going to spend the output at the script address while referencing the just created output with the script. We create the transaction with,
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 93724d399b58a70385ad7ce7ba6471b7b4fcb691a28266cd7700d902e0a500c5#1 \
@@ -183,16 +183,16 @@ $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --out-file tx.body
 Estimated transaction fee: Lovelace 214478
 ```
-To get the transaction id for identification we use
+To get the transaction ID for identification, we use
 ```
 $ cardano-cli transaction txid --tx-body-file tx.body 
 7f27988fb39cd92bcbc79dcd1717fb6805aa1400fa8c60a0ccc30a20ce534afa
 ```
-This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use
+This will be part of the new output identifier. Then we sign the `tx.body` with the witness associated to the output we are spending, in our case this is just a key. We use,
 ```
 $ cardano-cli transaction sign --tx-body-file tx.body --signing-key-file key1.skey --testnet-magic 9 --out-file tx.signed
 ```
-To submit the signed transaction we use
+To submit the signed transaction, we use
 ```
 $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed 
 Transaction successfully submitted.
