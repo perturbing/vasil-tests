@@ -1,6 +1,6 @@
 # On reference scripts and inline datums.
 * * *
-This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. To showcast these new CIP's in combination we will first create a transaction output that contains the script which we can later reference. Then we will create a transaaction output at the script address with an inline datum which we want to claim. Lastly we will show how we can claim the latter output without attaching a script to the transaction but by referencing the former output without consuming it.
+This tutorial shows how to utilize both [CIP 33](https://cips.cardano.org/cips/cip33/) and [CIP 32](https://cips.cardano.org/cips/cip32/) at the same time. To showcase these new CIP's in combination, we will first create a transaction output that contains the script, which we can later reference. Then we will create a transaction output at the script address with an inline datum which we want to claim. Lastly, we will show how we can claim the latter output without attaching a script to the transaction, but by referencing the former output without consuming it.
 
 We will use a basic plutusV2 script given by the validator
 ```
@@ -13,7 +13,7 @@ mkValidator :: MyCustomDatum -> MyCustomRedeemer -> PlutusV2.ScriptContext -> Bo
 mkValidator _ _ _ = True
 
 ```
-which will always succeeds. This compiles to the following serialized script,
+Which will always succeeds. This compiles to the following serialized script,
 ```
 {
     "type": "PlutusScriptV2",
@@ -25,7 +25,7 @@ which will always succeeds. This compiles to the following serialized script,
 
 
 ## Creating a transaction output at a key witnessed address to reference
-First we create a transaction output at a normal key witnessed address to which we also attach the above script for later referencing in transactions. To create such an output we use 
+First, we create a transaction output at a normal key witnessed address, to which we also attach the above script for later referencing in transactions. To create such an output, we use, 
 ```
 $ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 832015d4218db60e6bd9e38bbb73dc10f92f9c8d83b191e208bddb444aa103e2#0 \
@@ -39,7 +39,7 @@ Creating a witness for this transaction,
 ```
 $ cardano-cli transaction witness --tx-body-file tx.body --signing-key-file ../../../keys/key1.skey --testnet-magic 9 --out-file txWitness
 ```
-Assamble witness and tx,
+Assemble witness and the transaction,
 ```
 $ cardano-cli transaction assemble --tx-body-file tx.body --witness-file txWitness --out-file tx.signed
 ```
@@ -49,7 +49,7 @@ $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed && cardan
 Transaction successfully submitted
 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41
 ```
-To validate that our new output has the plutus script we use
+To validate that our new output has the plutus script, we use
 ```
 $ cardano-cli query utxo --tx-in 69163b01cb8f2dd0e710419340148d518c2160a7f587c7187e8ad2d3e74f6c41#1 --testnet-magic 9 --out-file test && cat test
 {
@@ -73,7 +73,7 @@ $ cardano-cli query utxo --tx-in 69163b01cb8f2dd0e710419340148d518c2160a7f587c71
 }
 
 ```
-We see that the `"referenceScript"` entry cointains the plutus script. Also note that we see the new `"inlineDatum"` field here as well.
+We see that the `"referenceScript"` entry contains the plutus script. Also note that we see the new `"inlineDatum"` field here as well.
 
 ## Creating a transaction output at the script address to claim
 This is done via the below command
@@ -85,7 +85,7 @@ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --change-address $(cat ../../../keys/key1.addr) \
 --out-file tx.body
 ```
-Here we used an arbitrary datum of the format, this datum can be arbitrary since the scripts logic we use does not depend on it. 
+Here we used an arbitrary datum of the format, this datum can be arbitrary since the script's logic we use does not depend on it. 
 ```
 {"constructor":0,"fields":[{"int":42}]}
 ```
@@ -93,7 +93,7 @@ Creating a witness for this transaction,
 ```
 $ cardano-cli transaction witness --tx-body-file tx.body --signing-key-file ../../../keys/key1.skey --testnet-magic 9 --out-file txWitness
 ```
-Assamble witness and tx,
+Assemble witness and transaction,
 ```
 $ cardano-cli transaction assemble --tx-body-file tx.body --witness-file txWitness --out-file tx.signed
 ```
@@ -103,7 +103,7 @@ $ cardano-cli transaction submit --testnet-magic 9 --tx-file tx.signed && cardan
 Transaction successfully submitted.
 2f95f685ebaa867b9fd59a646b85679716ae14b3505dbbf560a68e179606fad4
 ```
-To verify our output we check again with
+To verify our output, we check again with
 ```
 cardano-cli query utxo --tx-in 2f95f685ebaa867b9fd59a646b85679716ae14b3505dbbf560a68e179606fad4#1 --testnet-magic 9 --out-file test && cat test
 {
@@ -130,7 +130,7 @@ cardano-cli query utxo --tx-in 2f95f685ebaa867b9fd59a646b85679716ae14b3505dbbf56
 We indeed see that the `"inlineDatum"` field contains our datum.
 
 ## Claiming the output at the script address
-To claim the output we will reference the first output that has the plutusV2 script attached. We construct this via the following command
+To claim the output, we will reference the first output that has the plutusV2 script attached. We construct this via the following command,
 ```
 cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --tx-in 2f95f685ebaa867b9fd59a646b85679716ae14b3505dbbf560a68e179606fad4#1 \
@@ -143,7 +143,7 @@ cardano-cli transaction build --babbage-era --testnet-magic 9 \
 --protocol-params-file ../../protocol.json \
 --out-file tx.body
 ```
-Similarly as before we used an arbitrary redeemer of the format 
+Similarly, as before we used an arbitrary redeemer of the format 
 ```
 {"constructor":0,"fields":[{"int":42}]}
 ```
@@ -151,7 +151,7 @@ Creating a witness for this transaction,
 ```
 $ cardano-cli transaction witness --tx-body-file tx.body --signing-key-file ../../../keys/key1.skey --testnet-magic 9 --out-file txWitness
 ```
-Assamble witness and tx,
+Assemble witness and transaction,
 ```
 $ cardano-cli transaction assemble --tx-body-file tx.body --witness-file txWitness --out-file tx.signed
 ```
