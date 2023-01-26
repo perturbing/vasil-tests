@@ -11,9 +11,11 @@ $$
 where $a$ and $b$ are constants. They allow for complex mathematical operations such as addition and multiplication, which can be used to create secure cryptographic systems like public-key encryption and digital signature schemes. The security of these systems is rooted in the difficulty of solving mathematical problems related to the curve, such as the discrete logarithm problem. In essence, elliptic curves are a type of mathematical equation that have specific properties that can be utilized to create encryption or signature schemes that are highly resistant to being broken.
 
 There are various types of elliptic curves, each with distinct properties. For instance, Cardano uses the Ed25519 elliptic curve for its signatures, while Bitcoin and other cryptocurrencies use the SECP256k1 elliptic curve. The SECP256k1 curve in particular is defined by the equation,
+
 $$ 
 y^2 = x^3 + 7.
 $$
+
 The constants, $a$ and $b$, in this equation are chosen as $a=0$ and $b=7$. It's important to note that the selection of these constants plays a crucial role in determining the security of the curve and are chosen with great care.
 
 Two of the most widely used signature schemes that make use of the SECP256k1 curve are the Schnorr signature algorithm and the Elliptic Curve Digital Signature Algorithm (ECDSA). Both of these schemes aim to provide a secure method for creating digital signatures utilizing the properties of the elliptic curve.
