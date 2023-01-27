@@ -37,7 +37,7 @@ mkVerifyEcdsaPolicy :: (BI.BuiltinByteString, BI.BuiltinByteString, BI.BuiltinBy
                                -> Bool
 mkVerifyEcdsaPolicy (v, m, s) _sc = BI.verifyEcdsaSecp256k1Signature v m s
 ```
-Here the `(v, m, s)` stand for the verification key (also called the public key), `m` the hash of the message we signed and `s` the signature. This validator compiles to
+Here in `(v, m ,s)`, the `v` stands for the verification key (also called the public key), `m` the hash of the message we signed and `s` the signature. This validator compiles to
 <details>
   <summary>Script.plutus</summary>
     <code>
@@ -98,7 +98,7 @@ which we can run via the command
 ```bash
 deno run -A writeKey.ts
 ```
-Now we can fund the address via the [fauchet](https://docs.cardano.org/cardano-testnet/tools/faucet).
+Now we can fund the address via the [faucet](https://docs.cardano.org/cardano-testnet/tools/faucet).
 
 To mint an native asset under this policy you can use `mint.ts`
 ```ts
