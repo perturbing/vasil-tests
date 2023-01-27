@@ -71,7 +71,7 @@ Together this can be combined in the redeemer (which has the form `(v, m, s)`)
 ```json
 {"constructor":0,"fields":[{"bytes":"034646ae5047316b4230d0086c8acec687f00b1cd9d1dc634f6cb358ac0a9a8fff"},{"bytes":"8cb0165749d5e26b3400587d811df45fbae00cc9119500d4646d43ef2eff6b07"},{"bytes":"e5f202b2334ecdea7158d2764683e81658a068eb30e48a76f9862f651e3450783602f1554c9cc802551fe698bd9899edaef374d989ab2c29ec3faa0f2c1aadec"}]}
 ```
-To construct a transaction that mints an asset under this policy we will use the Lucid library in combination with blockfrost*. A Blockfrost API key can be retrieved via their website and Lucid code can easily be run via the software Deno*.
+To construct a transaction that mints an asset under this policy we will use the Lucid* library in combination with blockfrost*. A Blockfrost API key can be retrieved via their website and Lucid code can easily be run via the software Deno*.
 
 To generate a Cardano private key we can use the file `writeKey.ts`
 ```ts
