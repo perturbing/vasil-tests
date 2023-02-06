@@ -22,12 +22,12 @@ Two of the most widely used signature schemes that make use of the SECP256k1 cur
 In these signature schemes, a private key is used to generate a digital signature for a message, and the corresponding public key is used to verify the authenticity of the signature for that specific message. 
 
 ## What does the CIP introduce?
-The recent upgrade to Plutus now includes two new built-in functions for efficiently verifying both Schnorr and ECDSA signatures inside a plutus scripts. These functions are necessary for interoperability with other blockchains, as they typically use the SECP256k1 curve for signature validation, rather than the Cardano native Ed25619 curve. This allows for the creation of trustless bridges between different blockchain systems. Additionally, the Schnorr signature algorithm can easily be extended to allow for a aggregated multi party or treshold signature.
+The recent upgrade to Plutus now includes two new built-in functions for efficiently verifying both Schnorr and ECDSA signatures inside a plutus scripts. These functions are necessary for interoperability with other blockchains, as they typically use the SECP256k1 curve for signature validation, rather than the Cardano native Ed25619 curve. This allows for the creation of trustless bridges between different blockchain systems. Additionally, the Schnorr signature algorithm can easily be extended to allow for an aggregated multi party or threshold signature.
 
 The functions are defined [here](https://github.com/input-output-hk/plutus/blob/e470420424cc8c8fb9eb140702b39c6dfeb6a443/plutus-tx/src/PlutusTx/Builtins.hs#L170-L245) with an additional note on its implementation and usage.
 
 ## Using ECDSA over SECP256k1 in plutus
-In the following section we will showcase the usage of one of the functions, namely the verification function of an ECDSA signature over SECP256k1. In this example we will create a simple minting validator that allows minting if our ECDSA singature check evaluates correctly.
+In the following section, we will showcase the usage of one of the functions, namely the verification function of an ECDSA signature over SECP256k1. In this example, we will create a simple minting validator that allows minting if our ECDSA signature check evaluates correctly.
 
 This simple minting validator then takes the form
 ```haskell
@@ -51,7 +51,7 @@ Here in `(v, m ,s)`, the `v` stands for the verification key (also called the pu
 
 To start using this minting policy we first need a private and public key, for educational purposes these can be constructed in their hex notation via [this](https://paulmillr.com/noble/)* unsecure online demo of SECP256k1.
 
-In the rest of this tutorial we will use the private key (in hex)
+In the rest of this tutorial, we will use the private key (in hex)
 ```
 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 ```
@@ -67,13 +67,13 @@ Via the just mentioned online demo we retrieve for this particular message and p
 ```
 e5f202b2334ecdea7158d2764683e81658a068eb30e48a76f9862f651e3450783602f1554c9cc802551fe698bd9899edaef374d989ab2c29ec3faa0f2c1aadec
 ```
-Together this can be combined in the redeemer (which has the form `(v, m, s)`)
+Together, this can be combined in the redeemer (which has the form `(v, m, s)`)
 ```json
 {"constructor":0,"fields":[{"bytes":"034646ae5047316b4230d0086c8acec687f00b1cd9d1dc634f6cb358ac0a9a8fff"},{"bytes":"8cb0165749d5e26b3400587d811df45fbae00cc9119500d4646d43ef2eff6b07"},{"bytes":"e5f202b2334ecdea7158d2764683e81658a068eb30e48a76f9862f651e3450783602f1554c9cc802551fe698bd9899edaef374d989ab2c29ec3faa0f2c1aadec"}]}
 ```
-To construct a transaction that mints an asset under this policy we will use the Lucid* library in combination with blockfrost*. A Blockfrost API key can be retrieved via their website and Lucid code can easily be run via the software Deno*.
+To construct a transaction that mints an asset under this policy, we will use the Lucid* library in combination with blockfrost*. A Blockfrost API key can be retrieved via their website, and Lucid code can easily be run via the software Deno*.
 
-To generate a Cardano private key we can use the file `writeKey.ts`
+To generate a Cardano private key, we can use the file `writeKey.ts`
 ```ts
 import {
   Blockfrost,
@@ -83,7 +83,7 @@ import {
 const lucid = await Lucid.new(
   new Blockfrost(
     "https://cardano-preview.blockfrost.io/api/v0",
-    ""
+    "ENTER BLOCKFROST PREVIEW API KEY HERE"
   ),
   "Preview"
 );
@@ -94,13 +94,13 @@ await Deno.writeTextFile("CardanoSKey.sk", privateKey);
 const addr = await lucid.selectWalletFromPrivateKey(privateKey).wallet.address();
 console.log(addr)
 ```
-which we can run via the command
+Which we can run via the command
 ```bash
 deno run -A writeKey.ts
 ```
 Now we can fund the address via the [faucet](https://docs.cardano.org/cardano-testnet/tools/faucet).
 
-To mint an native asset under this policy you can use `mint.ts`
+To mint a native asset under this policy, you can use `mint.ts`
 ```ts
 import {
   Blockfrost,
@@ -118,7 +118,7 @@ import {
 const lucid = await Lucid.new(
   new Blockfrost(
     "https://cardano-preview.blockfrost.io/api/v0",
-    ""
+    "ENTER BLOCKFROST PREVIEW API KEY HERE"
   ),
   "Preview"
 );
@@ -155,10 +155,12 @@ export async function mint(
 console.log(addr);
 console.log(await mint("testToken"))
 ```
-Which we can run via the command
+This snippet of code defines the asynchronous function `mint` which takes in the token name as a string. In it, it creates a new transaction that mints 1 native asset under our SECP policy with this given name. The snippet can be run via the command
 ```bash
 deno run -A mint.ts
 ```
+
+***
 
 \* The information contained or reflected herein is provided for informational purposes only and (1) does not constitute an endorsement of any product or project by Input Output Global Inc. (IOG); (2) does not constitute investment advice, nor represent an expert opinion or negative assurance letter; (3) is not a substitute for a piece of professional advice; (4)  has not been submitted to, nor received approval from, any relevant regulatory bodies.
 The information contained or reflected herein is made available by third parties, subject to continuous change and therefore is not warranted as to their merchantability, completeness, accuracy, up-to-dateness or fitness for a particular purpose. The information and data are provided “as is” only.
